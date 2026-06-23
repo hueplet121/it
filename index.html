@@ -1,0 +1,1514 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Итальянский — курс уроков</title>
+<style>
+  :root {
+    --cream: #FAF6EE;
+    --paper: #FFFFFF;
+    --ink: #2B2520;
+    --terracotta: #C1543A;
+    --terracotta-soft: #F0DCD3;
+    --olive: #6B7A4D;
+    --olive-soft: #E4E9D8;
+    --line: #E3DACB;
+    --teacher-bg: #FFF6E0;
+    --teacher-border: #D9B65C;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--cream);
+    color: var(--ink);
+    font-family: "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+    line-height: 1.55;
+  }
+
+  .app { display: flex; min-height: 100vh; }
+
+  /* SIDEBAR */
+  .sidebar {
+    width: 280px;
+    flex-shrink: 0;
+    background: var(--paper);
+    border-right: 1px solid var(--line);
+    height: 100vh;
+    overflow-y: auto;
+    position: sticky;
+    top: 0;
+  }
+  .sidebar-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 18px 20px;
+    border-bottom: 1px solid var(--line);
+  }
+  .sidebar-head-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+  }
+  .sidebar-logo-icon {
+    width: 30px;
+    height: 30px;
+    flex-shrink: 0;
+    display: flex;
+  }
+  .sidebar-logo-icon svg { width: 100%; height: 100%; }
+  .sidebar-head h1 {
+    margin: 0;
+    font-size: 18px;
+    color: var(--terracotta);
+    font-weight: 700;
+  }
+  .sidebar-close-btn {
+    display: none;
+    background: var(--cream);
+    border: none;
+    width: 34px;
+    height: 34px;
+    border-radius: 9px;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--ink);
+    flex-shrink: 0;
+    transition: 0.15s;
+  }
+  .sidebar-close-btn svg { width: 18px; height: 18px; }
+  .sidebar-close-btn:hover { background: var(--terracotta-soft); color: var(--terracotta); }
+
+  .sidebar-list { padding: 16px 0; }
+
+  .nav-item {
+    padding: 13px 16px;
+    margin: 5px 12px;
+    border-radius: 11px;
+    cursor: pointer;
+    transition: 0.18s ease;
+    border: 1px solid transparent;
+    font-size: 14px;
+    background: var(--paper);
+  }
+  .nav-item:hover {
+    background: var(--terracotta-soft);
+    border-color: var(--terracotta-soft);
+  }
+  .nav-item.active {
+    background: var(--olive-soft);
+    border-color: var(--olive);
+    font-weight: 600;
+  }
+  .nav-item .nav-sub {
+    display: block;
+    font-size: 12px;
+    opacity: 0.7;
+    margin-top: 3px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+
+  /* ДЗ СТАТУС */
+  .nav-item-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .hw-badge {
+    flex-shrink: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size: 10.5px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 100px;
+    white-space: nowrap;
+  }
+  .hw-badge.done {
+    background: var(--olive-soft);
+    color: #4a5536;
+  }
+  .hw-badge.pending {
+    background: var(--terracotta-soft);
+    color: #8C3724;
+  }
+
+  .hw-toggle-card {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px dashed var(--line);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size: 13px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .hw-checkbox {
+    width: 18px;
+    height: 18px;
+    border-radius: 5px;
+    border: 2px solid var(--line);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.15s;
+    background: var(--paper);
+  }
+  .hw-checkbox.checked {
+    background: var(--olive);
+    border-color: var(--olive);
+    color: #fff;
+    font-size: 12px;
+  }
+  .hw-toggle-card .hw-label { color: #75695a; }
+  .hw-toggle-card .hw-label.done-label { color: var(--olive); font-weight: 600; }
+
+  .hw-status-banner {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 18px;
+    border-radius: 10px;
+    margin-bottom: 24px;
+    cursor: pointer;
+    user-select: none;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size: 14px;
+    transition: 0.15s;
+  }
+  .hw-status-banner.pending {
+    background: var(--terracotta-soft);
+    color: #8C3724;
+  }
+  .hw-status-banner.done {
+    background: var(--olive-soft);
+    color: #4a5536;
+  }
+  .hw-status-banner .hw-checkbox.pending-box { border-color: #C1543A; }
+
+  /* MOBILE TOPBAR */
+  .topbar {
+    display: none;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    background: var(--paper);
+    border-bottom: 1px solid var(--line);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+  .topbar button.menu-btn {
+    background: var(--terracotta);
+    color: white;
+    border: none;
+    width: 38px;
+    height: 38px;
+    border-radius: 8px;
+    font-size: 18px;
+    cursor: pointer;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .topbar .topbar-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--terracotta);
+  }
+
+  .overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(43,37,32,0.45);
+    z-index: 40;
+  }
+
+  /* MAIN */
+  .main { flex: 1; min-width: 0; }
+
+  .header {
+    background: linear-gradient(135deg, var(--terracotta) 0%, #A8442E 100%);
+    color: #FFF3EA;
+    padding: 40px 40px 32px;
+  }
+  .header-title { margin: 0 0 6px; font-size: 32px; font-weight: 700; }
+  .header-subtitle { margin: 0; font-size: 15px; opacity: 0.9; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+  .header-meta {
+    display: flex;
+    gap: 16px;
+    margin-top: 14px;
+    flex-wrap: wrap;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size: 13px;
+  }
+  .meta-pill {
+    background: rgba(255,255,255,0.16);
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 100px;
+    padding: 5px 12px;
+  }
+
+  .content { padding: 40px; max-width: 900px; }
+
+  .section { margin-bottom: 36px; padding-bottom: 28px; border-bottom: 1px solid var(--line); }
+  .section:last-child { border-bottom: none; }
+
+  .section-head { display: flex; align-items: baseline; gap: 12px; margin-bottom: 8px; }
+  .section-num {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    color: #fff;
+    background: var(--terracotta);
+    border-radius: 6px;
+    padding: 3px 8px;
+    white-space: nowrap;
+  }
+  .section-head h2 { margin: 0; font-size: 24px; }
+  .time-tag {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size: 13px;
+    color: #8a8275;
+    margin: 0 0 16px;
+  }
+
+  h3 { font-size: 16.5px; margin: 20px 0 10px; color: var(--terracotta); font-weight: 700; }
+  p { font-size: 15.5px; margin: 10px 0; }
+  ul, ol { margin: 12px 0; padding-left: 24px; }
+  li { margin-bottom: 6px; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 14px 0 20px;
+    font-size: 14.5px;
+    background: var(--paper);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  }
+  th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+  th {
+    background: var(--olive-soft);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #4a5536;
+    font-weight: 700;
+  }
+  tr:last-child td { border-bottom: none; }
+
+  .it { color: var(--terracotta); font-weight: 600; font-family: Georgia, serif; }
+
+  .teacher-note {
+    background: var(--teacher-bg);
+    border-left: 4px solid var(--teacher-border);
+    border-radius: 0 8px 8px 0;
+    padding: 12px 16px;
+    margin: 14px 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size: 13.5px;
+    color: #5c4a1f;
+  }
+  .teacher-note .label {
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    display: block;
+    margin-bottom: 4px;
+    color: #8a6c1f;
+  }
+
+  .task {
+    background: var(--olive-soft);
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin: 16px 0;
+  }
+  .task-label {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-weight: 700;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--olive);
+    margin: 0 0 8px;
+  }
+  .task ol, .task ul { margin: 6px 0 0; }
+
+  .dialogue {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin: 14px 0;
+    font-size: 15px;
+  }
+  .dialogue p { margin: 6px 0; }
+
+  .video-block {
+    margin: 18px 0;
+  }
+  .video-label {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-weight: 700;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--terracotta);
+    margin: 0 0 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .video-wrapper {
+    position: relative;
+    width: 100%;
+    padding-top: 56.25%; /* 16:9 */
+    border-radius: 12px;
+    overflow: hidden;
+    background: #1a1a1a;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.12);
+  }
+  .video-wrapper iframe {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    border: 0;
+  }
+  .video-caption {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size: 13px;
+    color: #8a8275;
+    margin-top: 8px;
+  }
+
+  .blank {
+    display: inline-block;
+    min-width: 50px;
+    border-bottom: 2px dotted var(--terracotta);
+    text-align: center;
+    color: transparent;
+    margin: 0 2px;
+  }
+
+  /* SUMMARY / HOMEWORK */
+  .summary-box {
+    background: var(--olive);
+    color: #F4F7EC;
+    border-radius: 12px;
+    padding: 24px;
+    margin-top: 30px;
+  }
+  .summary-box h2 { color: #F4F7EC; margin: 0; }
+  .summary-box .section-num { background: rgba(255,255,255,0.18); color: #fff; }
+  .summary-box ul { color: #F4F7EC; margin-top: 8px; }
+
+  /* КНОПКА ДЗ В ШАПКЕ УРОКА */
+  .hw-open-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    background: #FFF3EA;
+    border: none;
+    border-radius: 100px;
+    padding: 7px 18px 7px 8px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--terracotta);
+    cursor: pointer;
+    transition: 0.18s ease;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.18);
+  }
+  .hw-open-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 5px 14px rgba(0,0,0,0.22);
+  }
+  .hw-open-btn:active { transform: translateY(0); }
+
+  .hw-open-btn-icon {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 14px;
+    background: var(--terracotta-soft);
+  }
+  .hw-open-btn.done .hw-open-btn-icon {
+    background: var(--olive);
+    color: #fff;
+  }
+  .hw-open-btn.pending .hw-open-btn-icon {
+    background: var(--terracotta);
+    color: #fff;
+  }
+
+  .hw-open-btn-text {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    line-height: 1.25;
+  }
+  .hw-open-btn-text .hw-open-btn-title {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--ink);
+  }
+  .hw-open-btn-text .hw-open-status {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+  .hw-open-btn.pending .hw-open-status { color: var(--terracotta); }
+  .hw-open-btn.done .hw-open-status { color: var(--olive); }
+
+  /* МОДАЛЬНОЕ ОКНО ДЗ */
+  .hw-modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(43,37,32,0.55);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .hw-modal-overlay.open { display: flex; }
+
+  .hw-modal-panel {
+    background: var(--paper);
+    border-radius: 16px;
+    max-width: 720px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 32px 36px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+  }
+
+  .hw-modal-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 4px;
+  }
+  .hw-modal-head h2 { margin: 0; font-size: 22px; }
+  .hw-modal-close {
+    background: var(--cream);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    width: 32px;
+    height: 32px;
+    font-size: 15px;
+    cursor: pointer;
+    color: var(--ink);
+    flex-shrink: 0;
+    transition: 0.15s;
+  }
+  .hw-modal-close:hover { background: var(--terracotta-soft); }
+
+  .hw-modal-lesson-name {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size: 13px;
+    color: #8a8275;
+    margin: 0 0 18px;
+  }
+  .hw-modal-list { margin: 0 0 20px; padding-left: 22px; }
+  .hw-modal-list li { font-size: 15.5px; margin-bottom: 10px; }
+
+  /* СОДЕРЖИМОЕ ДОМАШКИ */
+  .hw-modal-body { margin-top: 22px; }
+
+  .hw-intro {
+    background: var(--cream);
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin-bottom: 24px;
+    font-size: 14.5px;
+    color: #5c5347;
+  }
+  .hw-intro p { margin: 0; }
+
+  .hw-section {
+    margin-bottom: 30px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--line);
+  }
+  .hw-section:last-of-type { border-bottom: none; }
+
+  .hw-section-num {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--terracotta);
+    margin: 0 0 2px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+  .hw-section-time {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size: 12.5px;
+    color: #a59c8c;
+    margin: 0 0 12px;
+  }
+
+  .hw-task-list { margin: 10px 0; padding-left: 20px; }
+  .hw-task-list li { font-size: 15px; margin-bottom: 12px; }
+
+  .hw-blank {
+    display: inline-block;
+    min-width: 55px;
+    border-bottom: 2px dotted var(--terracotta);
+    text-align: center;
+    color: transparent;
+    margin: 0 2px;
+  }
+
+  .hw-modal-body details {
+    display: inline-block;
+    margin-left: 6px;
+  }
+  .hw-modal-body details summary {
+    cursor: pointer;
+    color: var(--terracotta);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size: 12.5px;
+    font-weight: 600;
+    display: inline;
+  }
+  .hw-answer {
+    display: inline-block;
+    background: var(--olive-soft);
+    border-radius: 6px;
+    padding: 3px 10px;
+    margin-top: 6px;
+    font-family: Georgia, serif;
+    font-weight: 600;
+    color: #4a5536;
+    font-size: 14px;
+  }
+
+  .hw-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0 16px;
+    font-size: 14.5px;
+    background: var(--cream);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .hw-table th, .hw-table td {
+    text-align: left;
+    padding: 9px 12px;
+    border-bottom: 1px solid var(--line);
+  }
+  .hw-table th {
+    background: var(--olive-soft);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size: 11.5px;
+    text-transform: uppercase;
+    color: #4a5536;
+    font-weight: 700;
+  }
+  .hw-table tr:last-child td { border-bottom: none; }
+  .hw-it { color: var(--terracotta); font-weight: 600; font-family: Georgia, serif; }
+
+  .hw-table-numbers td { text-align: center; font-size: 15px; }
+
+  .hw-task-box {
+    background: var(--olive-soft);
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin-top: 12px;
+  }
+  .hw-task-label {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-weight: 700;
+    font-size: 11.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--olive);
+    margin: 0 0 6px;
+  }
+  .hw-task-box p:last-child { margin: 0; }
+
+  .hw-reading-box {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 18px 20px;
+    margin: 10px 0;
+  }
+
+  .hw-vocab-recap { margin-top: 8px; }
+  .hw-vocab-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+  }
+  .hw-vocab-cloud span {
+    background: var(--terracotta-soft);
+    color: #8C3724;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size: 12.5px;
+    font-weight: 600;
+    padding: 5px 11px;
+    border-radius: 100px;
+  }
+
+  /* WELCOME */
+  .welcome-hero {
+    background: linear-gradient(135deg, var(--terracotta) 0%, #A8442E 100%);
+    color: #FFF3EA;
+    padding: 64px 40px 56px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .welcome-flag { font-size: 44px; display: block; margin-bottom: 12px; }
+  .welcome-title { font-size: 42px; margin: 0 0 10px; font-weight: 700; }
+  .welcome-subtitle {
+    font-size: 16px; opacity: 0.92; margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+
+  .welcome-content { padding: 40px; max-width: 900px; }
+  .welcome-intro { font-size: 16px; color: #5c5347; margin-bottom: 28px; }
+
+  .lesson-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 18px;
+  }
+
+  .lesson-card {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 22px;
+    cursor: pointer;
+    transition: 0.18s ease;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+  .lesson-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(193,84,58,0.15);
+    border-color: var(--terracotta);
+  }
+  .lesson-card-num {
+    display: inline-block;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #fff;
+    background: var(--terracotta);
+    padding: 4px 10px;
+    border-radius: 100px;
+    margin-bottom: 12px;
+  }
+  .lesson-card h3 { margin: 0 0 8px; font-size: 18px; color: var(--ink); }
+  .lesson-card p { margin: 0 0 14px; font-size: 14px; color: #75695a; }
+  .lesson-card-meta {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size: 12.5px;
+    color: var(--olive);
+    font-weight: 600;
+  }
+  .lesson-card-future {
+    cursor: default;
+    background: transparent;
+    border: 1.5px dashed var(--line);
+    box-shadow: none;
+  }
+  .lesson-card-future:hover { transform: none; box-shadow: none; border-color: var(--line); }
+  .lesson-card-future .lesson-card-num {
+    background: transparent; color: #a59c8c; border: 1px solid var(--line);
+  }
+  .lesson-card-future h3 { color: #a59c8c; }
+  .lesson-card-future p { color: #b8af9f; }
+
+  .hidden { display: none !important; }
+
+  /* ===== MOBILE ===== */
+  @media (max-width: 768px) {
+    .topbar { display: flex; }
+
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100vh;
+      width: 280px;
+      max-width: 80vw;
+      z-index: 60;
+      transform: translateX(-100%);
+      transition: transform 0.25s ease;
+      box-shadow: 4px 0 24px rgba(0,0,0,0.15);
+    }
+    .sidebar.open { transform: translateX(0); }
+
+    .overlay.open { display: block; }
+
+    .header { padding: 28px 20px 22px; }
+    .header-title { font-size: 24px; }
+    .content { padding: 24px 16px; }
+
+    .welcome-hero { padding: 40px 20px 32px; }
+    .welcome-title { font-size: 28px; }
+    .welcome-content { padding: 24px 16px; }
+    .lesson-grid { grid-template-columns: 1fr; }
+
+    .header-meta { gap: 10px; }
+    .hw-open-btn {
+      width: 100%;
+      justify-content: center;
+      padding: 6px 16px 6px 6px;
+    }
+
+    .hw-modal-panel { padding: 22px 18px; max-height: 88vh; }
+    .hw-modal-head h2 { font-size: 19px; }
+    .hw-table-numbers td { font-size: 13.5px; padding: 7px 6px; }
+    .hw-section-num { font-size: 12px; }
+  }
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+  <div class="overlay" id="overlay"></div>
+
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-head">
+      <div class="sidebar-head-brand" id="logoBtn">
+        <span class="sidebar-logo-icon">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M3 5.5C3 4.67 3.67 4 4.5 4H10.5C11.33 4 12 4.67 12 5.5V19.5C12 18.67 11.33 18 10.5 18H4.5C3.67 18 3 17.33 3 16.5V5.5Z" fill="#C1543A"/>
+            <path d="M21 5.5C21 4.67 20.33 4 19.5 4H13.5C12.67 4 12 4.67 12 5.5V19.5C12 18.67 12.67 18 13.5 18H19.5C20.33 18 21 17.33 21 16.5V5.5Z" fill="#6B7A4D"/>
+            <path d="M6 8H9M6 11H9M15 8H18M15 11H18" stroke="#FAF6EE" stroke-width="1.1" stroke-linecap="round"/>
+          </svg>
+        </span>
+        <h1>Уроки</h1>
+      </div>
+      <button class="sidebar-close-btn" id="sidebarCloseBtn" aria-label="Закрыть меню">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M6 6L18 18M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+    <div class="sidebar-list" id="navList"></div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <button class="menu-btn" id="menuBtn" aria-label="Открыть меню">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M4 6H20M4 12H20M4 18H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
+      <span class="topbar-title">Итальянский — курс уроков</span>
+    </div>
+
+    <div id="welcomeScreen">
+      <div class="welcome-hero">
+        <span class="welcome-flag">🇮🇹</span>
+        <h1 class="welcome-title">Buongiorno!</h1>
+        <p class="welcome-subtitle">Курс итальянского языка — с нуля и по делу</p>
+      </div>
+      <div class="welcome-content">
+        <p class="welcome-intro">Здесь собраны все уроки курса. Выбирай урок слева — или начни с первого, если ещё не приступала.</p>
+        <div class="lesson-grid" id="lessonGrid"></div>
+      </div>
+    </div>
+
+    <div id="lessonScreen" class="hidden"></div>
+  </main>
+
+  <div class="hw-modal-overlay" id="hwModal">
+    <div class="hw-modal-panel" id="hwModalContent" role="dialog" aria-modal="true"></div>
+  </div>
+
+</div>
+
+<script>
+// ============ ДАННЫЕ УРОКОВ ============
+const lessons = [
+  {
+    id: 'lesson-1',
+    number: 1,
+    title: 'Итальянский с нуля',
+    subtitle: 'Алфавит, произношение, первые фразы и основы грамматики',
+    time: '60 минут',
+    level: 'абсолютный новичок',
+    sectionsHTML: `
+      <div class="section">
+        <div class="section-head"><span class="section-num">0</span><h2>Знакомство с языком</h2></div>
+        <p class="time-tag">≈ 3 минуты</p>
+        <p>Скажи коротко:</p>
+        <ul>
+          <li>Итальянский — язык, который читается почти так, как пишется. Это хорошая новость: в отличие от английского, почти нет «непонятно, как это произносить».</li>
+          <li>Сегодня: научимся читать любое итальянское слово, выучим 15–20 базовых слов и фраз, разберём первую и самую важную грамматическую конструкцию — глагол «быть».</li>
+        </ul>
+        <div class="teacher-note">
+          <span class="label">💡 Тебе</span>
+          Цель этой фразы — снять тревогу «это сложно». Итальянский — один из самых фонетически логичных языков, это сразу даёт ученице чувство контроля.
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-head"><span class="section-num">1</span><h2>Алфавит и произношение</h2></div>
+        <p class="time-tag">≈ 12 минут</p>
+        <h3>1.1 Алфавит</h3>
+        <p>В итальянском <strong>21 буква</strong> (нет J, K, W, X, Y — встречаются только в иностранных словах).</p>
+        <div class="teacher-note">
+          <span class="label">💡 Тебе</span>
+          Не зубрить названия букв — это не нужно на старте. Важнее звуки. Упомяни бегло и переходи к правилам ниже.
+        </div>
+
+        <h3>1.2 Главное правило</h3>
+        <p><strong>Как написано — так и читается.</strong> Почти без исключений.</p>
+
+        <table>
+          <tr><th>Сочетание</th><th>Звучит как</th><th>Пример</th><th>Перевод</th></tr>
+          <tr><td><strong>C + a, o, u</strong></td><td>«К»</td><td class="it">casa</td><td>дом</td></tr>
+          <tr><td><strong>C + e, i</strong></td><td>«Ч»</td><td class="it">ciao</td><td>привет</td></tr>
+          <tr><td><strong>CH</strong></td><td>«К» (всегда!)</td><td class="it">chi</td><td>кто</td></tr>
+          <tr><td><strong>G + a, o, u</strong></td><td>«Г»</td><td class="it">gatto</td><td>кот</td></tr>
+          <tr><td><strong>G + e, i</strong></td><td>«ДЖ»</td><td class="it">gelato</td><td>мороженое</td></tr>
+          <tr><td><strong>GH</strong></td><td>«Г» (всегда!)</td><td class="it">spaghetti</td><td>спагетти</td></tr>
+          <tr><td><strong>GLI</strong></td><td>«ЛЬИ»</td><td class="it">famiglia</td><td>семья</td></tr>
+          <tr><td><strong>SC + a,o,u</strong></td><td>«СК»</td><td class="it">scuola</td><td>школа</td></tr>
+          <tr><td><strong>SC + e,i</strong></td><td>«Ш»</td><td class="it">pesce</td><td>рыба</td></tr>
+        </table>
+
+        <div class="teacher-note">
+          <span class="label">💡 Тебе</span>
+          Это самая важная таблица урока. Разбери на словах, которые она уже знает: pizza, ciao, spaghetti, cappuccino, gelato.
+        </div>
+
+        <div class="task">
+          <p class="task-label">🎯 Задание 1 · устное · 4 мин</p>
+          <p>Прочитай вслух:</p>
+          <ol>
+            <li>ciao (чао) — привет</li>
+            <li>casa (каза) — дом</li>
+            <li>amico (амико) — друг</li>
+            <li>ragazza (рагацца) — девушка</li>
+            <li>gelato (джелато) — мороженое</li>
+            <li>grazie (грацие) — спасибо</li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-head"><span class="section-num">2</span><h2>Первые слова и фразы</h2></div>
+        <p class="time-tag">≈ 10 минут</p>
+        <h3>2.1 Приветствия и вежливость</h3>
+        <table>
+          <tr><th>Итальянский</th><th>Русский</th></tr>
+          <tr><td class="it">Ciao!</td><td>Привет! / Пока! (неформально)</td></tr>
+          <tr><td class="it">Buongiorno</td><td>Добрый день/утро (формально)</td></tr>
+          <tr><td class="it">Come stai?</td><td>Как ты? (неформально)</td></tr>
+          <tr><td class="it">Bene, grazie</td><td>Хорошо, спасибо</td></tr>
+          <tr><td class="it">Per favore</td><td>Пожалуйста (просьба)</td></tr>
+          <tr><td class="it">Grazie</td><td>Спасибо</td></tr>
+          <tr><td class="it">Prego</td><td>Пожалуйста (ответ)</td></tr>
+          <tr><td class="it">Scusa</td><td>Извини</td></tr>
+        </table>
+
+        <div class="task">
+          <p class="task-label">🎯 Задание 2 · мини-диалог · 3 мин</p>
+          <p>Разыграйте по ролям:</p>
+          <div class="dialogue">
+            <p class="it">— Ciao! Come stai?</p>
+            <p class="it">— Bene, grazie! E tu?</p>
+            <p class="it">— Anche io bene, grazie.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-head"><span class="section-num">3</span><h2>Грамматика — ядро урока</h2></div>
+        <p class="time-tag">≈ 20 минут</p>
+        <h3>3.1 Существительные и род</h3>
+        <p><strong>В итальянском у каждого существительного есть род</strong> — мужской или женский.</p>
+
+        <table>
+          <tr><th>Окончание</th><th>Род</th><th>Пример</th></tr>
+          <tr><td><strong>-O</strong></td><td>мужской (почти всегда)</td><td class="it">libro (книга, м.р.!)</td></tr>
+          <tr><td><strong>-A</strong></td><td>женский (почти всегда)</td><td class="it">casa (дом, ж.р.!)</td></tr>
+          <tr><td><strong>-E</strong></td><td>может быть и тот, и тот</td><td class="it">notte (ночь, ж.), pane (хлеб, м.)</td></tr>
+        </table>
+
+        <div class="teacher-note">
+          <span class="label">💡 Тебе</span>
+          Важно: <strong>libro</strong> («книга») мужского рода, а <strong>casa</strong> («дом») — женского. Проговори явно, иначе она будет калькировать род с русского.
+        </div>
+
+        <p style="margin-top:20px;"><strong>Множественное число:</strong></p>
+        <table>
+          <tr><th>Было (ед.ч.)</th><th>Стало (мн.ч.)</th><th>Пример</th></tr>
+          <tr><td>-O (м.р.)</td><td>-I</td><td class="it">libro → libri</td></tr>
+          <tr><td>-A (ж.р.)</td><td>-E</td><td class="it">casa → case</td></tr>
+          <tr><td>-E (м/ж)</td><td>-I</td><td class="it">notte → notti</td></tr>
+        </table>
+
+        <h3>3.2 Артикли — il / la / un / una</h3>
+        <p>В итальянском есть артикли — маленькое слово перед существительным.</p>
+
+        <p><strong>Неопределённый артикль (a/an):</strong></p>
+        <table>
+          <tr><th>Род</th><th>Артикль</th><th>Пример</th></tr>
+          <tr><td>М.р.</td><td><strong>un</strong></td><td class="it">un libro</td></tr>
+          <tr><td>Ж.р.</td><td><strong>una</strong></td><td class="it">una casa</td></tr>
+          <tr><td>Ж.р. (гласная)</td><td><strong>un'</strong></td><td class="it">un'amica</td></tr>
+        </table>
+
+        <p style="margin-top:14px;"><strong>Определённый артикль (the):</strong></p>
+        <table>
+          <tr><th></th><th>Единственное</th><th>Множественное</th></tr>
+          <tr><td>М.р.</td><td class="it">il</td><td class="it">i</td></tr>
+          <tr><td>Ж.р.</td><td class="it">la</td><td class="it">le</td></tr>
+        </table>
+
+        <div class="teacher-note">
+          <span class="label">💡 Тебе</span>
+          Для первого урока хватит базовых il / la / un / una. Остальные варианты — позже.
+        </div>
+
+        <div class="task">
+          <p class="task-label">🎯 Задание 3 · расставь артикли · 5 мин</p>
+          <p>Поставь "un / una" перед словом:</p>
+          <ol>
+            <li><span class="blank">___</span> casa (дом, ж.р.)</li>
+            <li><span class="blank">___</span> libro (книга, м.р.)</li>
+            <li><span class="blank">___</span> amico (друг, м.р.)</li>
+            <li><span class="blank">___</span> ragazza (девушка, ж.р.)</li>
+            <li><span class="blank">___</span> gelato (мороженое, м.р.)</li>
+          </ol>
+        </div>
+
+        <h3>3.3 Глагол ESSERE («быть»)</h3>
+        <p>Это первый глагол. Он неправильный, поэтому выучить наизусть:</p>
+
+        <table>
+          <tr><th>Кто</th><th>Essere (быть)</th><th>Пример</th></tr>
+          <tr><td>io (я)</td><td class="it"><strong>sono</strong></td><td>Io sono russa</td></tr>
+          <tr><td>tu (ты)</td><td class="it"><strong>sei</strong></td><td>Tu sei gentile</td></tr>
+          <tr><td>lui/lei (он/она)</td><td class="it"><strong>è</strong></td><td>Lei è italiana</td></tr>
+          <tr><td>noi (мы)</td><td class="it"><strong>siamo</strong></td><td>Noi siamo amici</td></tr>
+          <tr><td>voi (вы, мн.)</td><td class="it"><strong>siete</strong></td><td>Voi siete studenti</td></tr>
+          <tr><td>loro (они)</td><td class="it"><strong>sono</strong></td><td>Loro sono qui</td></tr>
+        </table>
+
+        <div class="teacher-note">
+          <span class="label">💡 Тебе</span>
+          Подчеркни: io sono и loro sono звучат одинаково. Также помни: местоимения часто пропускаются в итальянском.
+        </div>
+
+        <div class="task">
+          <p class="task-label">🎯 Задание 4 · заполни пропуски · 4 мин</p>
+          <ol>
+            <li>Io <span class="blank">___</span> studentessa.</li>
+            <li>Tu <span class="blank">___</span> molto gentile.</li>
+            <li>Marco <span class="blank">___</span> italiano.</li>
+            <li>Noi <span class="blank">___</span> amici.</li>
+            <li>Loro <span class="blank">___</span> a Roma.</li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-head"><span class="section-num">4</span><h2>Закрепление — рассказ о себе</h2></div>
+        <p class="time-tag">≈ 13 минут (с видео)</p>
+        <h3>4.1 Шаблон самопрезентации</h3>
+        <div class="dialogue">
+          <p class="it">Ciao! Io sono [имя]. Sono russa. Sono una studentessa. E tu?</p>
+          <p style="font-size:14px; font-style:italic;">Привет! Я [имя]. Я русская. Я студентка. А ты?</p>
+        </div>
+
+        <h3>4.2 Посмотрите, как это делают носители языка</h3>
+        <div class="video-block">
+          <p class="video-label">🎬 Видео · 3-4 мин</p>
+          <div class="video-wrapper">
+            <iframe src="https://www.youtube.com/embed/ieyLUxtwch4" title="Introduce Yourself in Italian (for absolute beginners)" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+          </div>
+          <p class="video-caption">Easy Italian — короткие интервью с итальянцами о том, как они представляются. Полезно для живого произношения и интонации.</p>
+        </div>
+
+        <div class="teacher-note">
+          <span class="label">💡 Тебе</span>
+          Включи видео целиком или фрагмент (1–2 минуты достаточно). Не нужно понимать всё — задача показать, как звучит настоящая итальянская речь, и что "Io sono..." реально так и говорят в жизни. После просмотра спроси: "Какие слова из видео ты узнала?" — это свяжет видео с материалом урока перед финальным заданием.
+        </div>
+
+        <div class="task">
+          <p class="task-label">🎯 Финальное задание · 7 мин</p>
+          <p>Составь 4–5 предложений о себе по шаблону:</p>
+          <ul>
+            <li>Ciao, io sono...</li>
+            <li>Sono russa / Sono di [город]</li>
+            <li>Sono una studentessa / un'insegnante</li>
+            <li>Sono molto felice di imparare l'italiano</li>
+          </ul>
+        </div>
+
+        <div class="teacher-note">
+          <span class="label">💡 Тебе</span>
+          Это кульминация урока. Дай время подумать, помоги со словами, но не доделывай за неё. Хвали за каждое верно построенное предложение.
+        </div>
+      </div>
+
+      <div class="summary-box">
+        <div class="section-head" style="margin-bottom:14px;">
+          <span class="section-num">✓</span><h2>Итоги урока</h2>
+        </div>
+        <ul>
+          <li>Научилась читать любое слово по-итальянски</li>
+          <li>Выучила 20+ слов и фраз</li>
+          <li>Поняла род существительных и артикли</li>
+          <li>Выучила глагол essere</li>
+          <li>Составила первый рассказ о себе</li>
+        </ul>
+      </div>
+    `,
+    homeworkHTML: `
+      <div class="hw-intro">
+        <p>Это домашнее задание займёт примерно <strong>70–80 минут</strong>. Не нужно делать всё за один присест — лучше разбить на 2-3 части в разные дни. Ответы можно проверять сразу — они скрыты под спойлером, открывай только после того, как попробуешь сама.</p>
+      </div>
+
+      <div class="hw-section">
+        <p class="hw-section-num">1 · Повторение essere</p>
+        <p class="hw-section-time">≈ 10 минут</p>
+        <p>Заполни пропуски правильной формой глагола <strong>essere</strong>:</p>
+        <ol class="hw-task-list">
+          <li>Io <span class="hw-blank">_____</span> felice oggi. <details><summary>ответ</summary><div class="hw-answer">sono</div></details></li>
+          <li>Tu <span class="hw-blank">_____</span> una ragazza simpatica. <details><summary>ответ</summary><div class="hw-answer">sei</div></details></li>
+          <li>Mia madre <span class="hw-blank">_____</span> insegnante. <em>(Моя мама — учительница)</em> <details><summary>ответ</summary><div class="hw-answer">è</div></details></li>
+          <li>Noi <span class="hw-blank">_____</span> studenti di italiano. <details><summary>ответ</summary><div class="hw-answer">siamo</div></details></li>
+          <li>Voi <span class="hw-blank">_____</span> molto gentili. <details><summary>ответ</summary><div class="hw-answer">siete</div></details></li>
+          <li>I miei amici <span class="hw-blank">_____</span> a Milano. <em>(Мои друзья в Милане)</em> <details><summary>ответ</summary><div class="hw-answer">sono</div></details></li>
+        </ol>
+      </div>
+
+      <div class="hw-section">
+        <p class="hw-section-num">2 · Новая лексика — семья (la famiglia)</p>
+        <p class="hw-section-time">≈ 12 минут</p>
+        <p>Выучи новые слова — они продолжают тему "рассказ о себе" из урока:</p>
+        <table class="hw-table">
+          <tr><th>Итальянский</th><th>Русский</th></tr>
+          <tr><td class="hw-it">la famiglia</td><td>семья</td></tr>
+          <tr><td class="hw-it">la madre / mamma</td><td>мать / мама</td></tr>
+          <tr><td class="hw-it">il padre / papà</td><td>отец / папа</td></tr>
+          <tr><td class="hw-it">il fratello</td><td>брат</td></tr>
+          <tr><td class="hw-it">la sorella</td><td>сестра</td></tr>
+          <tr><td class="hw-it">il figlio / la figlia</td><td>сын / дочь</td></tr>
+          <tr><td class="hw-it">il nonno / la nonna</td><td>дедушка / бабушка</td></tr>
+          <tr><td class="hw-it">il marito / la moglie</td><td>муж / жена</td></tr>
+          <tr><td class="hw-it">i genitori</td><td>родители</td></tr>
+          <tr><td class="hw-it">i figli</td><td>дети (сыновья/дочери)</td></tr>
+        </table>
+        <div class="hw-task-box">
+          <p class="hw-task-label">Задание</p>
+          <p>Закрой правую колонку рукой и переведи все 10 слов с итальянского на русский. Потом — наоборот, с русского на итальянский. Повтори, пока не получится без ошибок.</p>
+        </div>
+      </div>
+
+      <div class="hw-section">
+        <p class="hw-section-num">3 · Числа 0–10 (i numeri)</p>
+        <p class="hw-section-time">≈ 10 минут</p>
+        <p>Числа нужны для цен, телефонов, возраста — выучи их наизусть:</p>
+        <table class="hw-table hw-table-numbers">
+          <tr><td class="hw-it">0 zero</td><td class="hw-it">1 uno</td><td class="hw-it">2 due</td><td class="hw-it">3 tre</td></tr>
+          <tr><td class="hw-it">4 quattro</td><td class="hw-it">5 cinque</td><td class="hw-it">6 sei</td><td class="hw-it">7 sette</td></tr>
+          <tr><td class="hw-it">8 otto</td><td class="hw-it">9 nove</td><td class="hw-it">10 dieci</td><td></td></tr>
+        </table>
+        <div class="hw-task-box">
+          <p class="hw-task-label">Задание</p>
+          <p>Напиши словами по-итальянски номер своего телефона (только последние 4-5 цифр) — например: <em>tre, sei, due, nove</em>. Потренируйся произносить вслух.</p>
+        </div>
+      </div>
+
+      <div class="hw-section">
+        <p class="hw-section-num">4 · Артикли — закрепление</p>
+        <p class="hw-section-time">≈ 8 минут</p>
+        <p>Вспомни новые слова из раздела 2 и поставь подходящий неопределённый артикль (<strong>un / una</strong>):</p>
+        <ol class="hw-task-list">
+          <li><span class="hw-blank">___</span> famiglia <details><summary>ответ</summary><div class="hw-answer">una famiglia</div></details></li>
+          <li><span class="hw-blank">___</span> sorella <details><summary>ответ</summary><div class="hw-answer">una sorella</div></details></li>
+          <li><span class="hw-blank">___</span> fratello <details><summary>ответ</summary><div class="hw-answer">un fratello</div></details></li>
+          <li><span class="hw-blank">___</span> nonno <details><summary>ответ</summary><div class="hw-answer">un nonno</div></details></li>
+        </ol>
+      </div>
+
+      <div class="hw-section">
+        <p class="hw-section-num">5 · Мини-чтение</p>
+        <p class="hw-section-time">≈ 10 минут</p>
+        <div class="hw-reading-box">
+          <p class="hw-it" style="font-size:16px; line-height:1.7;">
+            Ciao! Io sono Anna. Sono russa, sono di Mosca. Sono una studentessa. Ho una famiglia piccola: io, mia madre e mio fratello. Mia madre è insegnante. Mio fratello è studente, come me. Siamo molto felici insieme.
+          </p>
+        </div>
+        <div class="hw-task-box">
+          <p class="hw-task-label">Задание</p>
+          <p>Переведи текст на русский язык письменно (от руки или в заметках телефона). Подчеркни все формы глагола essere, которые встретишь.</p>
+        </div>
+      </div>
+
+      <div class="hw-section">
+        <p class="hw-section-num">6 · Новая лексика — дни недели (i giorni della settimana)</p>
+        <p class="hw-section-time">≈ 8 минут</p>
+        <p>Пригодится для расписаний, встреч и разговоров о планах:</p>
+        <table class="hw-table">
+          <tr><th>Итальянский</th><th>Русский</th></tr>
+          <tr><td class="hw-it">lunedì</td><td>понедельник</td></tr>
+          <tr><td class="hw-it">martedì</td><td>вторник</td></tr>
+          <tr><td class="hw-it">mercoledì</td><td>среда</td></tr>
+          <tr><td class="hw-it">giovedì</td><td>четверг</td></tr>
+          <tr><td class="hw-it">venerdì</td><td>пятница</td></tr>
+          <tr><td class="hw-it">sabato</td><td>субота</td></tr>
+          <tr><td class="hw-it">domenica</td><td>воскресенье</td></tr>
+          <tr><td class="hw-it">oggi</td><td>сегодня</td></tr>
+          <tr><td class="hw-it">domani</td><td>завтра</td></tr>
+          <tr><td class="hw-it">ieri</td><td>вчера</td></tr>
+        </table>
+        <div class="hw-task-box">
+          <p class="hw-task-label">Задание</p>
+          <p>Скажи вслух, какой сегодня день недели и какой будет завтра, по-итальянски. Например: <em>Oggi è lunedì, domani è martedì.</em></p>
+        </div>
+      </div>
+
+      <div class="hw-section">
+        <p class="hw-section-num">7 · Новая лексика — еда и быт (cibo e casa)</p>
+        <p class="hw-section-time">≈ 10 минут</p>
+        <p>Базовые слова, которые встретятся на каждом шагу — в кафе, магазине, дома:</p>
+        <table class="hw-table">
+          <tr><th>Итальянский</th><th>Русский</th></tr>
+          <tr><td class="hw-it">il pane</td><td>хлеб</td></tr>
+          <tr><td class="hw-it">l'acqua</td><td>вода</td></tr>
+          <tr><td class="hw-it">il caffè</td><td>кофе</td></tr>
+          <tr><td class="hw-it">il latte</td><td>молоко</td></tr>
+          <tr><td class="hw-it">la frutta</td><td>фрукты</td></tr>
+          <tr><td class="hw-it">la verdura</td><td>овощи</td></tr>
+          <tr><td class="hw-it">il ristorante</td><td>ресторан</td></tr>
+          <tr><td class="hw-it">il negozio</td><td>магазин</td></tr>
+          <tr><td class="hw-it">la stanza</td><td>комната</td></tr>
+          <tr><td class="hw-it">la chiave</td><td>ключ</td></tr>
+        </table>
+        <div class="hw-task-box">
+          <p class="hw-task-label">Задание</p>
+          <p>Составь список покупок из 5 пунктов на итальянском, используя слова выше (например: pane, latte, frutta...).</p>
+        </div>
+      </div>
+
+      <div class="hw-section">
+        <p class="hw-section-num">8 · Творческое задание</p>
+        <p class="hw-section-time">≈ 10 минут</p>
+        <div class="hw-task-box">
+          <p class="hw-task-label">Задание</p>
+          <p>Напиши 6-8 предложений о своей семье на итальянском, используя слова из раздела 2 и essere. Используй текст из раздела 5 как образец структуры. Не бойся ошибок — это нормально на старте.</p>
+        </div>
+      </div>
+
+      <div class="hw-vocab-recap">
+        <p class="hw-task-label">📚 Новые слова этого ДЗ — для повторения</p>
+        <table class="hw-table">
+          <tr><th>Итальянский</th><th>Русский</th></tr>
+          <tr><td class="hw-it">famiglia</td><td>семья</td></tr>
+          <tr><td class="hw-it">madre / mamma</td><td>мать / мама</td></tr>
+          <tr><td class="hw-it">padre / papà</td><td>отец / папа</td></tr>
+          <tr><td class="hw-it">fratello</td><td>брат</td></tr>
+          <tr><td class="hw-it">sorella</td><td>сестра</td></tr>
+          <tr><td class="hw-it">figlio / figlia</td><td>сын / дочь</td></tr>
+          <tr><td class="hw-it">nonno / nonna</td><td>дедушка / бабушка</td></tr>
+          <tr><td class="hw-it">marito / moglie</td><td>муж / жена</td></tr>
+          <tr><td class="hw-it">genitori</td><td>родители</td></tr>
+          <tr><td class="hw-it">zero – dieci</td><td>числа 0–10</td></tr>
+          <tr><td class="hw-it">lunedì</td><td>понедельник</td></tr>
+          <tr><td class="hw-it">martedì</td><td>вторник</td></tr>
+          <tr><td class="hw-it">mercoledì</td><td>среда</td></tr>
+          <tr><td class="hw-it">giovedì</td><td>четверг</td></tr>
+          <tr><td class="hw-it">venerdì</td><td>пятница</td></tr>
+          <tr><td class="hw-it">sabato</td><td>субота</td></tr>
+          <tr><td class="hw-it">domenica</td><td>воскресенье</td></tr>
+          <tr><td class="hw-it">oggi / domani / ieri</td><td>сегодня / завтра / вчера</td></tr>
+          <tr><td class="hw-it">pane</td><td>хлеб</td></tr>
+          <tr><td class="hw-it">acqua</td><td>вода</td></tr>
+          <tr><td class="hw-it">caffè</td><td>кофе</td></tr>
+          <tr><td class="hw-it">latte</td><td>молоко</td></tr>
+          <tr><td class="hw-it">frutta</td><td>фрукты</td></tr>
+          <tr><td class="hw-it">verdura</td><td>овощи</td></tr>
+          <tr><td class="hw-it">ristorante</td><td>ресторан</td></tr>
+          <tr><td class="hw-it">negozio</td><td>магазин</td></tr>
+          <tr><td class="hw-it">stanza</td><td>комната</td></tr>
+          <tr><td class="hw-it">chiave</td><td>ключ</td></tr>
+        </table>
+      </div>
+    `
+  }
+  // ============ МЕСТО ДЛЯ УРОКА 2 (и дальше) ============
+  // Когда скажешь "добавь урок 2", сюда добавится новый объект с id: 'lesson-2'
+];
+
+// ============ СТАТУС ДОМАШНЕГО ЗАДАНИЯ ============
+const HW_STORAGE_KEY = 'italian_course_hw_status';
+
+function getHwStatus() {
+  try {
+    const raw = localStorage.getItem(HW_STORAGE_KEY);
+    return raw ? JSON.parse(raw) : {};
+  } catch (e) {
+    return {};
+  }
+}
+
+function isHwDone(lessonId) {
+  const status = getHwStatus();
+  return !!status[lessonId];
+}
+
+function toggleHwDone(lessonId) {
+  const status = getHwStatus();
+  status[lessonId] = !status[lessonId];
+  try {
+    localStorage.setItem(HW_STORAGE_KEY, JSON.stringify(status));
+  } catch (e) {}
+  return status[lessonId];
+}
+
+// ============ РЕНДЕР ============
+const sidebar = document.getElementById('sidebar');
+const overlay = document.getElementById('overlay');
+const navList = document.getElementById('navList');
+const lessonGrid = document.getElementById('lessonGrid');
+const welcomeScreen = document.getElementById('welcomeScreen');
+const lessonScreen = document.getElementById('lessonScreen');
+
+function closeSidebar() {
+  sidebar.classList.remove('open');
+  overlay.classList.remove('open');
+}
+function openSidebar() {
+  sidebar.classList.add('open');
+  overlay.classList.add('open');
+}
+
+document.getElementById('menuBtn').addEventListener('click', () => {
+  if (sidebar.classList.contains('open')) closeSidebar();
+  else openSidebar();
+});
+document.getElementById('sidebarCloseBtn').addEventListener('click', closeSidebar);
+overlay.addEventListener('click', closeSidebar);
+
+document.getElementById('logoBtn').addEventListener('click', () => {
+  showWelcome();
+  closeSidebar();
+});
+
+document.getElementById('hwModal').addEventListener('click', (e) => {
+  if (e.target.id === 'hwModal') closeHwModal();
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    closeHwModal();
+    closeSidebar();
+  }
+});
+
+function renderNav(activeId) {
+  navList.innerHTML = '';
+  lessons.forEach(lesson => {
+    const done = isHwDone(lesson.id);
+    const item = document.createElement('div');
+    item.className = 'nav-item' + (lesson.id === activeId ? ' active' : '');
+    item.innerHTML = `
+      <div class="nav-item-row">
+        <span>Урок ${lesson.number}</span>
+        <span class="hw-badge ${done ? 'done' : 'pending'}">${done ? '✓ ДЗ готово' : 'ДЗ не сдано'}</span>
+      </div>
+      <span class="nav-sub">${lesson.title}</span>
+    `;
+    item.addEventListener('click', () => {
+      showLesson(lesson.id);
+      closeSidebar();
+    });
+    navList.appendChild(item);
+  });
+}
+
+function renderLessonGrid() {
+  lessonGrid.innerHTML = '';
+  lessons.forEach(lesson => {
+    const done = isHwDone(lesson.id);
+    const card = document.createElement('div');
+    card.className = 'lesson-card';
+    card.innerHTML = `
+      <div class="nav-item-row" style="margin-bottom:12px;">
+        <span class="lesson-card-num" style="margin-bottom:0;">Урок ${lesson.number}</span>
+        <span class="hw-badge ${done ? 'done' : 'pending'}">${done ? '✓ ДЗ готово' : 'ДЗ не сдано'}</span>
+      </div>
+      <h3>${lesson.title}</h3>
+      <p>${lesson.subtitle}</p>
+      <div class="lesson-card-meta"><span>⏱ ${lesson.time}</span></div>
+      <div class="hw-toggle-card" data-role="hw-toggle">
+        <span class="hw-checkbox ${done ? 'checked' : ''}">${done ? '✓' : ''}</span>
+        <span class="hw-label ${done ? 'done-label' : ''}">${done ? 'Домашка сделана' : 'Отметить домашку сделанной'}</span>
+      </div>
+    `;
+    card.addEventListener('click', (e) => {
+      if (e.target.closest('[data-role="hw-toggle"]')) {
+        e.stopPropagation();
+        toggleHwDone(lesson.id);
+        renderLessonGrid();
+        renderNav(null);
+        return;
+      }
+      showLesson(lesson.id);
+    });
+    lessonGrid.appendChild(card);
+  });
+
+  const futureCard = document.createElement('div');
+  futureCard.className = 'lesson-card lesson-card-future';
+  futureCard.innerHTML = `
+    <span class="lesson-card-num">Скоро</span>
+    <h3>Следующий урок</h3>
+    <p>Появится здесь, когда будет готов</p>
+  `;
+  lessonGrid.appendChild(futureCard);
+}
+
+function showWelcome() {
+  welcomeScreen.classList.remove('hidden');
+  lessonScreen.classList.add('hidden');
+  renderNav(null);
+}
+
+function renderHwButton(lesson) {
+  const done = isHwDone(lesson.id);
+  return `
+    <button class="hw-open-btn ${done ? 'done' : 'pending'}" data-role="open-hw-modal">
+      <span class="hw-open-btn-icon">${done ? '✓' : '📝'}</span>
+      <span class="hw-open-btn-text">
+        <span class="hw-open-btn-title">Домашнее задание</span>
+        <span class="hw-open-status">${done ? 'Готово' : 'Не сделано'}</span>
+      </span>
+    </button>
+  `;
+}
+
+function renderHwModalContent(lesson) {
+  const done = isHwDone(lesson.id);
+  return `
+    <div class="hw-modal-head">
+      <h2>📝 Домашнее задание</h2>
+      <button class="hw-modal-close" data-role="close-hw-modal" aria-label="Закрыть">✕</button>
+    </div>
+    <p class="hw-modal-lesson-name">${lesson.title}</p>
+    <div class="hw-status-banner ${done ? 'done' : 'pending'}" data-role="hw-banner-toggle">
+      <span class="hw-checkbox ${done ? 'checked' : ''}" style="background:${done ? 'var(--olive)' : 'transparent'}; border-color:${done ? 'var(--olive)' : '#C1543A'};">${done ? '✓' : ''}</span>
+      <span>${done ? 'Домашнее задание отмечено как сделанное' : 'Домашнее задание ещё не отмечено как сделанное — нажми, чтобы отметить'}</span>
+    </div>
+    <div class="hw-modal-body">
+      ${lesson.homeworkHTML}
+    </div>
+    <div class="hw-status-banner ${done ? 'done' : 'pending'}" data-role="hw-banner-toggle-bottom" style="margin-top:24px;">
+      <span class="hw-checkbox ${done ? 'checked' : ''}" style="background:${done ? 'var(--olive)' : 'transparent'}; border-color:${done ? 'var(--olive)' : '#C1543A'};">${done ? '✓' : ''}</span>
+      <span>${done ? 'Домашнее задание отмечено как сделанное' : 'Всё сделано? Нажми, чтобы отметить домашку выполненной'}</span>
+    </div>
+  `;
+}
+
+function openHwModal(lessonId) {
+  const lesson = lessons.find(l => l.id === lessonId);
+  if (!lesson) return;
+  const modal = document.getElementById('hwModal');
+  const modalContent = document.getElementById('hwModalContent');
+  modalContent.innerHTML = renderHwModalContent(lesson);
+  modal.classList.add('open');
+  modalContent.scrollTop = 0;
+  document.body.style.overflow = 'hidden';
+
+  modalContent.querySelector('[data-role="close-hw-modal"]').addEventListener('click', closeHwModal);
+
+  const onToggle = () => {
+    toggleHwDone(lessonId);
+    openHwModal(lessonId);
+    renderNav(lessonId);
+    renderLessonGrid();
+    // обновим кнопку в шапке урока, если она открыта
+    const btnHolder = document.getElementById('hwButtonHolder');
+    if (btnHolder) btnHolder.innerHTML = renderHwButton(lesson);
+    attachHwButtonListener(lessonId);
+  };
+
+  modalContent.querySelectorAll('[data-role="hw-banner-toggle"], [data-role="hw-banner-toggle-bottom"]').forEach(el => {
+    el.addEventListener('click', onToggle);
+  });
+}
+
+function closeHwModal() {
+  document.getElementById('hwModal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function attachHwButtonListener(lessonId) {
+  const btnHolder = document.getElementById('hwButtonHolder');
+  if (!btnHolder) return;
+  const btn = btnHolder.querySelector('[data-role="open-hw-modal"]');
+  if (btn) btn.addEventListener('click', () => openHwModal(lessonId));
+}
+
+function showLesson(id) {
+  const lesson = lessons.find(l => l.id === id);
+  if (!lesson) return;
+  welcomeScreen.classList.add('hidden');
+  lessonScreen.classList.remove('hidden');
+  lessonScreen.innerHTML = `
+    <div class="header">
+      <h1 class="header-title">${lesson.title}</h1>
+      <p class="header-subtitle">${lesson.subtitle}</p>
+      <div class="header-meta">
+        <span class="meta-pill">⏱ ${lesson.time}</span>
+        <span class="meta-pill">🎯 ${lesson.level}</span>
+        <span id="hwButtonHolder">${renderHwButton(lesson)}</span>
+      </div>
+    </div>
+    <div class="content">
+      ${lesson.sectionsHTML}
+    </div>
+  `;
+  renderNav(id);
+  window.scrollTo(0, 0);
+  attachHwButtonListener(id);
+}
+
+// init
+renderLessonGrid();
+renderNav(null);
+</script>
+</body>
+</html>
